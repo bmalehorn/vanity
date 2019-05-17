@@ -1,25 +1,34 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
-DAYS = [
-  '2018-07-02',
-  '2018-07-03',
-  '2018-07-04',
-  '2018-07-05',
-  '2018-07-06',
-  '2018-07-09',
-  '2018-07-11',
-  '2018-07-13',
-  '2018-07-16',
-  '2018-07-18',
-  '2018-07-20',
-  '2018-07-25',
-  '2018-07-26',
-  '2018-07-27'
+require 'pp'
+require 'date'
+
+PATTERN = [
+  # DAY_ZERO
+  # |
+  # |
+  # |
+  # v
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
+  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1],
+  [1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ].freeze
 
+DAY_ZERO = DateTime.parse('2018-07-01T12:00:00+00:00')
+
+COMMIT_TIMES = 8
+
 def main
-  DAYS.each do |day|
-    make_commit_on_day(day)
+  PATTERN.first.size.times do |week|
+    7.times do |dow|
+      date = DAY_ZERO + 7 * week + dow
+      make_one_commit(date) if PATTERN[dow][week] == 1
+    end
   end
 end
 
@@ -28,7 +37,10 @@ def make_commit_on_day(day)
 end
 
 def make_one_commit(date)
-  `GIT_COMMITTER_DATE='#{date}' git commit --allow-empty -m '[vanity]' --date='#{date}'`
+  COMMIT_TIMES.times do
+    cmd = "GIT_COMMITTER_DATE='#{date}' git commit --allow-empty -m '[vanity]' --date='#{date}'"
+    system(cmd)
+  end
 end
 
 main
