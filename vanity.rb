@@ -21,7 +21,7 @@ PATTERN = [
 
 DAY_ZERO = DateTime.parse('2018-07-01T12:00:00+00:00')
 
-COMMIT_TIMES = 8
+COMMIT_TIMES = 32
 
 def main
   PATTERN.first.size.times do |week|
